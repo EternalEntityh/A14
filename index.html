@@ -709,7 +709,7 @@
 
         .letter-body p span {
             opacity: 0;
-            animation: typeChar 0.05s forwards;
+            animation: typeChar 0.02s forwards;
         }
 
         @keyframes typeChar {
@@ -1158,20 +1158,27 @@
         const volumeIcon = document.getElementById('volumeIcon');
         let isPlaying = false;
         let currentVolume = 0.7;
+        let audioInitialized = false;
 
         audio.volume = currentVolume;
 
-        document.addEventListener('click', function initAudio() {
-            audio.play().then(() => {
-                isPlaying = true;
-                audioIndicator.classList.add('playing');
-                audioIndicator.classList.remove('paused');
-            }).catch(() => {
-                audioIndicator.classList.add('paused');
-                audioIndicator.classList.remove('playing');
-            });
-            document.removeEventListener('click', initAudio);
-        }, { once: true });
+        function tryPlayAudio() {
+            if (!audioInitialized) {
+                audio.play().then(() => {
+                    audioInitialized = true;
+                    isPlaying = true;
+                    audioIndicator.classList.add('playing');
+                    audioIndicator.classList.remove('paused');
+                }).catch(err => {
+                    console.log('Audio bloqueado, esperando interacción...');
+                    audioIndicator.classList.add('paused');
+                    audioIndicator.classList.remove('playing');
+                });
+            }
+        }
+
+        document.addEventListener('click', tryPlayAudio, { once: true });
+        document.addEventListener('touchstart', tryPlayAudio, { once: true });
 
         audioIndicator.addEventListener('click', () => {
             volumeControl.classList.toggle('active');
@@ -1271,7 +1278,6 @@
             }
         });
 
-        // typewriter effect
         function typewriterEffect() {
             const paragraphs = document.querySelectorAll('.letter-body p');
             let paragraphIndex = 0;
@@ -1291,7 +1297,7 @@
                     
                     setTimeout(() => {
                         typeParagraph(p, text, charIndex + 1);
-                    }, 30);
+                    }, 15);
                 } else {
                     paragraphIndex++;
                     if (paragraphIndex < paragraphs.length) {
@@ -1299,7 +1305,7 @@
                             const nextP = paragraphs[paragraphIndex];
                             const nextText = nextP.textContent;
                             typeParagraph(nextP, nextText);
-                        }, 400);
+                        }, 200);
                     }
                 }
             }
@@ -1315,4 +1321,3 @@
     </script>
 </body>
 </html>
-
