@@ -700,22 +700,7 @@
         .letter-body p {
             margin-bottom: 25px;
             text-align: justify;
-            opacity: 0;
-        }
-
-        .letter-body p.typing {
             opacity: 1;
-        }
-
-        .letter-body p span {
-            opacity: 0;
-            animation: typeChar 0.02s forwards;
-        }
-
-        @keyframes typeChar {
-            to {
-                opacity: 1;
-            }
         }
 
         .letter-closing {
@@ -1277,47 +1262,6 @@
                 updateVolume(0.7);
             }
         });
-
-        function typewriterEffect() {
-            const paragraphs = document.querySelectorAll('.letter-body p');
-            let paragraphIndex = 0;
-            
-            function typeParagraph(p, text, charIndex = 0) {
-                if (charIndex === 0) {
-                    p.innerHTML = '';
-                    p.classList.add('typing');
-                }
-                
-                if (charIndex < text.length) {
-                    const char = text.charAt(charIndex);
-                    const span = document.createElement('span');
-                    span.textContent = char;
-                    span.style.animationDelay = '0s';
-                    p.appendChild(span);
-                    
-                    setTimeout(() => {
-                        typeParagraph(p, text, charIndex + 1);
-                    }, 15);
-                } else {
-                    paragraphIndex++;
-                    if (paragraphIndex < paragraphs.length) {
-                        setTimeout(() => {
-                            const nextP = paragraphs[paragraphIndex];
-                            const nextText = nextP.textContent;
-                            typeParagraph(nextP, nextText);
-                        }, 200);
-                    }
-                }
-            }
-            
-            setTimeout(() => {
-                const firstP = paragraphs[0];
-                const firstText = firstP.textContent;
-                typeParagraph(firstP, firstText);
-            }, 2500);
-        }
-
-        window.addEventListener('load', typewriterEffect);
     </script>
 </body>
 </html>
